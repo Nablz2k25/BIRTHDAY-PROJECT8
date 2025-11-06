@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tryas's 18th Birthday Diary 💙</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: #cfe8ff;
+      color: #1e3a5f;
+      overflow: hidden;
+      transition: background 1s ease;
+    }
+
+    .slide {
+      display: none;
+      height: 100vh;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    button {
+      background-color: #8fcaff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #5db4ff;
+    }
+
+    textarea {
+      width: 80%;
+      height: 150px;
+      border: 2px dashed #5db4ff;
+      border-radius: 15px;
+      padding: 10px;
+      font-family: "Poppins", sans-serif;
+      font-size: 1rem;
+      background: #f4faff;
+      resize: none;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      width: 80%;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      white-space: pre-line;
+      background: #f4faff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti"></canvas>
+
+  <!-- SLIDE 1 -->
+  <div class="slide active" id="slide1">
+    <h1>Tryas's 18th Birthday Diary 💙</h1>
+    <button onclick="nextSlide(2); startConfetti()">Open Me 🎁</button>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide" id="slide2">
+    <h1>Write Something for Yourself 💭</h1>
+    <textarea id="note" placeholder="Tulis pesan untuk dirimu di usia 18 tahun ini..."></textarea><br>
+    <button onclick="saveNote()">Save</button>
+    <button onclick="undoNote()">Undo</button>
+    <button onclick="clearNote()">Clear</button><br><br>
+    <button onclick="nextSlide(3)">Next ➜</button>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide" id="slide3">
+    <h1>From Me to You 🤗</h1>
+    <div class="message">
+      aku bukan anak word of affirmation jadi maafin ini ngga bisa bikin kata kata.
+      tapi jujur… perjalanan hidup kita dari jaman bocil kematian ke remaja yang mulai dewasa
+      dan penuh intrik ini ga akan pernah bisa diungkapin sama kata apa pun.
+      salah satu hal yang selalu bikin aku ketawa, sedih, haru, dan kadang tercengang ya…
+      kalo inget kita dulu 😭
+      semoga pertemanan kita ini bisa jadi salah satu kado terbaik di ulang tahun kita ya.
+      생일 축하해 🥳
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const slides = document.querySelectorAll('.slide');
+    const confettiCanvas = document.getElementById('confetti');
+    const ctx = confettiCanvas.getContext('2d');
+    let confettiPieces = [];
+
+    function nextSlide(num) {
+      slides.forEach(s => s.classList.remove('active'));
+      document.getElementById(slide${num}).classList.add('active');
+    }
+
+    function saveNote() {
+      const note = document.getElementById('note').value;
+      localStorage.setItem('tryasNote', note);
+      alert('Pesanmu tersimpan 🤍');
+    }
+
+    function undoNote() {
+      document.getElementById('note').value = localStorage.getItem('tryasNote') || '';
+    }
+
+    function clearNote() {
+      document.getElementById('note').value = '';
+      localStorage.removeItem('tryasNote');
+    }
+
+    // Confetti
+    function resizeCanvas() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function startConfetti() {
+      confettiPieces = Array.from({length: 100}, () => ({
+        x: Math.random() * confettiCanvas.width,
+        y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+        r: Math.random() * 6 + 2,
+        color: hsl(${Math.random() * 60 + 190}, 100%, 75%),
+        speed: Math.random() * 3 + 2
+      }));
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiPieces.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        p.y += p.speed;
+        if (p.y > confettiCanvas.height) p.y = 0 - p.r;
+      });
+      requestAnimationFrame(animateConfetti);
+    }
+  </script>
+
+</body>
+</html>
